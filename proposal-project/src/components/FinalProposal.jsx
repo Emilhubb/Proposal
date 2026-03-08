@@ -18,7 +18,6 @@ function FinalProposal({ selfie }) {
     setShowSecond(true);
   };
 
-  // Ref for the confetti container
   const containerRef = useRef(null);
   const [confettiSize, setConfettiSize] = useState({ width: 0, height: 0 });
 
@@ -40,7 +39,7 @@ function FinalProposal({ selfie }) {
           backgroundImage: `url(${selfie})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "blur(3px)",
+          filter: "blur(1px)",
         }}
       />
 
@@ -54,15 +53,15 @@ function FinalProposal({ selfie }) {
               position: "absolute",
               top: 0,
               left: 0,
-              width: "100%", // div-in eni qədər
-              height: "100%", // div-in hündürlüyü qədər
+              width: "100%", 
+              height: "100%", 
               pointerEvents: "none",
-              overflow: "hidden", // div-dən çıxan confetti gizlənir
+              overflow: "hidden", 
             }}
           >
             <Confetti
-              width={containerRef.current?.offsetWidth} // div ölçüsünə uyğun
-              height={containerRef.current?.offsetHeight} // div ölçüsünə uyğun
+              width={containerRef.current?.offsetWidth} 
+              height={containerRef.current?.offsetHeight}
               numberOfPieces={200}
               recycle={true}
             />

@@ -9,7 +9,7 @@ const BuildUp = ({ next, setSelfie }) => {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: { facingMode: "user" } })
       .then((stream) => {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
@@ -32,6 +32,8 @@ const BuildUp = ({ next, setSelfie }) => {
     canvasRef.current.width = width;
     canvasRef.current.height = height;
     const context = canvasRef.current.getContext("2d");
+    context.translate(width, 0);
+    context.scale(-1, 1);
     context.drawImage(videoRef.current, 0, 0, width, height);
     const data = canvasRef.current.toDataURL("image/png");
     setPhoto(data);
@@ -65,7 +67,12 @@ const BuildUp = ({ next, setSelfie }) => {
             <br /> Click the button below, and we'll take a picture that we can
             cherish forever!
           </p>
-          <video ref={videoRef} className="w-72 h-72 rounded-lg border mb-4" />
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            className="w-72 h-72 rounded-lg border mb-4 transform scale-x-[-1] object-cover"
+          />
 
           <Button
             variant="contained"
