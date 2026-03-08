@@ -1,9 +1,9 @@
 *{
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Cinzel', cursive;
 }
 @keyframes floatDown {
   0% {
-    transform: translateY(1vh) scale(0.5); /* Ekranın yuxarısından kənarda başlayır */
+    transform: translateY(1vh) scale(0.5); 
     opacity: 0;
   }
   10% {
@@ -13,14 +13,14 @@
     opacity: 0.8;
   }
   100% {
-    transform: translateY(100vh) scale(1.4); /* Ekranın aşağısından kənara çıxır */
+    transform: translateY(100vh) scale(1.4); 
     opacity: 0;
   }
 }
 
 .floating-heart {
   position: absolute;
-  top: -10vh; /* Başlanğıc nöqtəsi yuxarı */
+  top: -10vh; 
   animation: floatDown linear infinite;
   pointer-events: none;
 }

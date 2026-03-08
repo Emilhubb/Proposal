@@ -4,7 +4,7 @@ const theme = createTheme({
   typography: {
     button: {
       textTransform: 'none',
-      fontFamily: 'Dancing Script, cursive',
+      fontFamily: 'Cinzel, cursive',
       fontSize: '1.25rem',
     },
   },

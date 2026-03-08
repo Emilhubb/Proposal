@@ -96,7 +96,7 @@ const BuildUp = ({ next, setSelfie }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-pink-200 text-center p-6">
+    <div className="h-screen flex flex-col items-center justify-center bg-pink-200 text-center p-6 select-none">
       <HeartAnimation />
       <h2 className="text-3xl font-bold mb-6">
         {!hasPhoto ? (

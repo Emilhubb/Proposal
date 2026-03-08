@@ -10,7 +10,7 @@ const Question = ({ next, text, options }) => {
     <>
     <HeartAnimation/>
       <div className="h-screen flex flex-col items-center justify-center bg-pink-200 text-center">
-        <h2 className="text-3xl font-bold mb-4 text-pink-500 pb-10">{message}</h2>
+        <h2 className="text-3xl font-bold mb-4 text-pink-500 pb-10 select-none">{message}</h2>
 
         <div className="flex flex-col gap-4">
           {options.map((option, index) => (

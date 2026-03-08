@@ -5,8 +5,8 @@ export default {
     extend: {
       
       fontFamily: {
-        heading: ["Playfair Display", "serif"],
-        body: ["Poppins", "sans-serif"],
+        heading: ["Quicksand", "serif"],
+        body: ["Quicksand", "sans-serif"],
       },
       animation: {
         'gradient-xy': 'gradient-xy 5s ease infinite',

@@ -77,7 +77,7 @@ function FinalProposal({ selfie }) {
           </div>
         )}
       </div>
-      <div className="relative bg-white/70 p-10 rounded-lg z-10">
+      <div className="relative bg-white/70 p-10 rounded-lg z-10 select-none">
         <p className="text-4xl font-bold mb-6 text-red-500">
           {showSecond ? secondMessage : firstMessage}
         </p>
