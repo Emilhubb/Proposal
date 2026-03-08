@@ -4,7 +4,7 @@ import "../styles/App.css";
 const HeartAnimation = () => {
   const hearts = Array.from({ length: 10 });
   return (
-    <div className="absolute inset-0 z-999">
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       {hearts.map((_, i) => (
         <span
           key={i}

@@ -32,48 +32,45 @@ const BuildUp = ({ next, setSelfie }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Video sensorunun xam ölçüləri
     const vW = video.videoWidth;
     const vH = video.videoHeight;
 
-    // ƏGƏR EN > HÜNDÜRLÜK (Landscape tutulub),
-    // onda biz hündürlüyü EN, eni isə HÜNDÜRLÜK kimi qəbul edirik ki, şəkil DİK olsun.
-    const isActuallyLandscape = vW > vH;
+    let angle = 0;
+    if (screen.orientation) angle = screen.orientation.angle;
+    else if (window.orientation) angle = window.orientation;
 
     const padding = 20;
     const bottomSpace = 90;
 
-    // Canvas həmişə DİK (Portrait) formada yaradılır
-    const targetW = isActuallyLandscape ? vH : vW;
-    const targetH = isActuallyLandscape ? vW : vH;
 
-    canvas.width = targetW + padding * 2;
-    canvas.height = targetH + padding + bottomSpace;
+    const isLandscape = angle === 90 || angle === 270 || angle === -90;
 
-    // 1. Ağ fonu rənglə
+    const finalImgW = isLandscape ? vH : vW;
+    const finalImgH = isLandscape ? vW : vH;
+
+    canvas.width = finalImgW + padding * 2;
+    canvas.height = finalImgH + padding + bottomSpace;
+
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-    // 2. Mərkəzi fotonun çəkiləcəyi yerə köçür
-    ctx.translate(canvas.width / 2, (targetH + padding * 2) / 2);
 
-    // 3. Əgər telefon yan tutulubsa, görüntünü mütləq 90 dərəcə sola fırlat
-    if (isActuallyLandscape) {
-      ctx.rotate(-Math.PI / 2); // 90 dərəcə sola çevirmə
+    ctx.translate(canvas.width / 2, (finalImgH + padding * 2) / 2);
+
+    if (isLandscape) {
+      const rotationAdjustment = angle === 90 ? -90 : 90;
+      ctx.rotate((rotationAdjustment * Math.PI) / 180);
     }
 
-    // 4. Selfie (Mirror) effekti - video teqindəki kimi
     ctx.scale(-1, 1);
 
-    // 5. Şəkli çək (Orijinal sensor ölçüləri ilə)
     ctx.drawImage(video, -vW / 2, -vH / 2, vW, vH);
     ctx.restore();
 
-    // 6. Yazı hissəsi
     ctx.fillStyle = "#4b5563";
     ctx.textAlign = "center";
-    ctx.font = "bold 24px 'Dancing Script', cursive";
+    ctx.font = "bold 28px 'Dancing Script', cursive";
     ctx.fillText(
       "Our first photo together! ❤️",
       canvas.width / 2,
@@ -102,15 +99,25 @@ const BuildUp = ({ next, setSelfie }) => {
     <div className="h-screen flex flex-col items-center justify-center bg-pink-200 text-center p-6">
       <HeartAnimation />
       <h2 className="text-3xl font-bold mb-6">
-        Let's make this moment a little more memorable!
+        {!hasPhoto ? (
+          <p className="text-3xl font-bold text-gray-800">
+            Ready for our first selfie? 📸
+          </p>
+        ) : (
+          <p
+            className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-red-500 animate-pulse pb-2"
+            style={{ fontFamily: "'Dancing Script', cursive" }}
+          >
+            Voilà!
+          </p>
+        )}
       </h2>
 
       {!hasPhoto ? (
         <>
           <p className="mb-8 text-lg">
             Let's create a special photo together to capture this moment.
-            <br /> Click the button below, and we'll take a picture that we can
-            cherish forever!
+            <br /> A picture that we can cherish forever!
           </p>
           <video
             ref={videoRef}
@@ -131,29 +138,32 @@ const BuildUp = ({ next, setSelfie }) => {
       ) : (
         <>
           <div className="flex flex-col items-center">
-            {/* Polaroid Çərçivə */}
-            <div className="bg-white p-3 pb-12 rounded-sm shadow-2xl transform rotate-1 transition-transform hover:rotate-0">
-              {/* Şəkil sahəsi */}
-              <div className="w-72 h-72 overflow-hidden border border-gray-200">
-                <img
-                  src={photo}
-                  alt="selfie"
-                  className="w-full h-full object-cover"
-                  style={{ filter: "sepia(0.2) contrast(1.1)" }} // Vintage filter toxunuşu
-                />
-              </div>
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-pink-300 to-rose-400 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
 
-              {/* Şəklin altındakı yazı sahəsi */}
-              <div className="mt-6 text-center">
-                <h2
-                  className="text-2xl text-gray-700 opacity-80"
-                  style={{
-                    fontFamily: "'Dancing Script', cursive",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Our first photo together! ❤️
-                </h2>
+              <div className="relative bg-white p-3 pb-14 rounded-sm shadow-2xl transform rotate-1 transition-all duration-500 hover:rotate-0 hover:scale-105">
+                <div className="w-72 h-72 overflow-hidden border border-gray-100 shadow-inner">
+                  <img
+                    src={photo}
+                    alt="selfie"
+                    className="w-full h-full object-cover"
+                    style={{
+                      filter: "sepia(0.1) contrast(1.1) brightness(1.05)",
+                    }}
+                  />
+                </div>
+
+                <div className="mt-6 text-center">
+                  <h2
+                    className="text-2xl text-pink-700 opacity-90"
+                    style={{
+                      fontFamily: "'Dancing Script', cursive",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Where our forever begins 💫
+                  </h2>
+                </div>
               </div>
             </div>
           </div>
