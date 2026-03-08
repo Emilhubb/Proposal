@@ -52,7 +52,9 @@ const BuildUp = ({ next, setSelfie }) => {
     else if (angle === 90) {
       canvas.width = height;
       canvas.height = width;
-      ctx.rotate(Math.PI / 2);
+      ctx.translate(canvas.width, 0);
+
+      ctx.rotate(-Math.PI / 2);
       ctx.drawImage(videoRef.current, 0, -height, width, height);
     }
 
@@ -60,9 +62,9 @@ const BuildUp = ({ next, setSelfie }) => {
     else if (angle === -90 || angle === 270) {
       canvas.width = height;
       canvas.height = width;
-      ctx.translate(canvas.width, 0);
+      ctx.translate(0, canvas.height);
       ctx.rotate(Math.PI / 2);
-      ctx.drawImage(videoRef.current, 0, 0, width, height);
+      ctx.drawImage(videoRef.current, -width, 0, width, height);
     }
 
     const data = canvasRef.current.toDataURL("image/png");
@@ -101,7 +103,7 @@ const BuildUp = ({ next, setSelfie }) => {
             ref={videoRef}
             autoPlay
             playsInline
-            className="w-72 h-72 rounded-lg border mb-4 transform scale-x-[-1] object-cover"
+            className="w-72 h-72 rounded-lg border mb-4 object-cover"
           />
 
           <Button
