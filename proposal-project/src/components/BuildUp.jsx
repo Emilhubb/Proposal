@@ -60,8 +60,9 @@ const BuildUp = ({ next, setSelfie }) => {
     else if (angle === -90 || angle === 270) {
       canvas.width = height;
       canvas.height = width;
-      ctx.rotate(-Math.PI / 2);
-      ctx.drawImage(videoRef.current, -width, 0, width, height);
+      ctx.translate(canvas.width, 0);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(videoRef.current, 0, 0, width, height);
     }
 
     const data = canvasRef.current.toDataURL("image/png");
