@@ -27,54 +27,56 @@ const BuildUp = ({ next, setSelfie }) => {
   }, []);
 
   const takePhoto = () => {
-    const width = videoRef.current.videoWidth;
-    const height = videoRef.current.videoHeight;
-
+    const video = videoRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+
     let angle = 0;
+    if (screen.orientation) angle = screen.orientation.angle;
+    else if (window.orientation) angle = window.orientation;
 
-    if (screen.orientation) {
-      angle = screen.orientation.angle;
-    } else if (window.orientation) {
-      angle = window.orientation;
-    }
+    // canvas ölçüləri default
+    canvas.width = width;
+    canvas.height = height;
 
-    // Portrait
+    // önəmli: transformları təmizlə
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     if (angle === 0) {
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(videoRef.current, 0, 0, width, height);
-    }
-
-    // Landscape sağ
-    else if (angle === 90) {
-      canvas.width = height;
-      canvas.height = width;
-      ctx.rotate(Math.PI / 2);
-      ctx.drawImage(videoRef.current, 0, -height, width, height);
-    }
-
-    // Landscape sol
-    else if (angle === -90 || angle === 270) {
+      // portrait düz
+      ctx.drawImage(video, 0, 0, width, height);
+    } else if (angle === 180) {
+      // portrait tərs → 180 rotate
+      ctx.translate(width, height);
+      ctx.rotate(Math.PI);
+      ctx.drawImage(video, 0, 0, width, height);
+    } else if (angle === 90) {
+      // landscape sağ → rotate -90
       canvas.width = height;
       canvas.height = width;
       ctx.translate(canvas.width, 0);
       ctx.rotate(-Math.PI / 2);
-      ctx.drawImage(videoRef.current, -width, 0, width, height);
+      ctx.drawImage(video, 0, 0, width, height);
+    } else if (angle === -90 || angle === 270) {
+      // landscape sol → rotate 90
+      canvas.width = height;
+      canvas.height = width;
+      ctx.translate(0, canvas.height);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(video, 0, 0, width, height);
     }
 
-    const data = canvasRef.current.toDataURL("image/png");
+    const data = canvas.toDataURL("image/png");
     setPhoto(data);
     setHasPhoto(true);
     setSelfie(data);
 
-    const stream = videoRef.current.srcObject;
-    const tracks = stream.getTracks();
-    tracks.forEach((track) => track.stop());
+    // Kamera dayandırılır
+    video.srcObject.getTracks().forEach((t) => t.stop());
   };
-
   const saveImage = (imageUrl) => {
     const link = document.createElement("a");
     link.href = imageUrl;
@@ -121,7 +123,7 @@ const BuildUp = ({ next, setSelfie }) => {
           <img
             src={photo}
             alt="selfie"
-            className="w-72 h-72 rounded-lg border object-cover transform rotate-[90deg] mb-4"
+            className="w-72 h-72 rounded-lg border object-cover mb-4"
           />
 
           <div className="flex gap-4 justify-center mt-4">
