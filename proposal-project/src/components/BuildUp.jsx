@@ -29,12 +29,41 @@ const BuildUp = ({ next, setSelfie }) => {
   const takePhoto = () => {
     const width = videoRef.current.videoWidth;
     const height = videoRef.current.videoHeight;
-    canvasRef.current.width = width;
-    canvasRef.current.height = height;
-    const context = canvasRef.current.getContext("2d");
-    context.translate(width, 0);
-    context.scale(-1, 1);
-    context.drawImage(videoRef.current, 0, 0, width, height);
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    let angle = 0;
+
+    if (screen.orientation) {
+      angle = screen.orientation.angle;
+    } else if (window.orientation) {
+      angle = window.orientation;
+    }
+
+    // Portrait
+    if (angle === 0) {
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(videoRef.current, 0, 0, width, height);
+    }
+
+    // Landscape sağ
+    else if (angle === 90) {
+      canvas.width = height;
+      canvas.height = width;
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(videoRef.current, 0, -height, width, height);
+    }
+
+    // Landscape sol
+    else if (angle === -90 || angle === 270) {
+      canvas.width = height;
+      canvas.height = width;
+      ctx.rotate(-Math.PI / 2);
+      ctx.drawImage(videoRef.current, -width, 0, width, height);
+    }
+
     const data = canvasRef.current.toDataURL("image/png");
     setPhoto(data);
     setHasPhoto(true);
