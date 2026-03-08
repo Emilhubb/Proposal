@@ -1,9 +1,17 @@
-*{
-    font-family: 'Cinzel', cursive;
+* {
+  font-family: "Cinzel", cursive;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body, html, #root {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Sağ tərəfə sürüşməni tam kəsir */
 }
 @keyframes floatDown {
   0% {
-    transform: translateY(1vh) scale(0.5); 
+    transform: translateY(1vh) scale(0.5);
     opacity: 0;
   }
   10% {
@@ -13,14 +21,14 @@
     opacity: 0.8;
   }
   100% {
-    transform: translateY(100vh) scale(1.4); 
+    transform: translateY(100vh) scale(1.4);
     opacity: 0;
   }
 }
 
 .floating-heart {
   position: absolute;
-  top: -10vh; 
+  top: -10vh;
   animation: floatDown linear infinite;
   pointer-events: none;
 }
