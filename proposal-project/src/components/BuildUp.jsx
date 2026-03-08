@@ -52,9 +52,7 @@ const BuildUp = ({ next, setSelfie }) => {
     else if (angle === 90) {
       canvas.width = height;
       canvas.height = width;
-      ctx.translate(canvas.width, 0);
-
-      ctx.rotate(-Math.PI / 2);
+      ctx.rotate(Math.PI / 2);
       ctx.drawImage(videoRef.current, 0, -height, width, height);
     }
 
@@ -62,8 +60,8 @@ const BuildUp = ({ next, setSelfie }) => {
     else if (angle === -90 || angle === 270) {
       canvas.width = height;
       canvas.height = width;
-      ctx.translate(0, canvas.height);
-      ctx.rotate(Math.PI / 2);
+      ctx.translate(canvas.width, 0);
+      ctx.rotate(-Math.PI / 2);
       ctx.drawImage(videoRef.current, -width, 0, width, height);
     }
 
@@ -103,7 +101,7 @@ const BuildUp = ({ next, setSelfie }) => {
             ref={videoRef}
             autoPlay
             playsInline
-            className="w-72 h-72 rounded-lg border mb-4 object-cover"
+            className="w-72 h-72 rounded-lg border mb-4 transform scale-x-[-1] object-cover"
           />
 
           <Button
@@ -123,7 +121,7 @@ const BuildUp = ({ next, setSelfie }) => {
           <img
             src={photo}
             alt="selfie"
-            className="w-72 h-72 rounded-lg border object-cover mb-4"
+            className="w-72 h-72 rounded-lg border object-cover transform rotate-[90deg] mb-4"
           />
 
           <div className="flex gap-4 justify-center mt-4">
