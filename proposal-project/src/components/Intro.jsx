@@ -42,6 +42,7 @@ const Intro = ({ next }) => {
       </div>
     </div>
   );
+
 };
 
 export default Intro;

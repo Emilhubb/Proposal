@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@mui/material";
 import Confetti from "react-confetti";
 import useTypeWriter from "../useTypeWriter";
-import { motion } from "framer-motion"; // Animasiyalar üçün
+import { motion } from "framer-motion";
 
 function FinalProposal({ selfie }) {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -10,7 +10,7 @@ function FinalProposal({ selfie }) {
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const firstMessage = useTypeWriter("Will you be my girlfriend? ❤️", 40);
   const secondMessage = useTypeWriter(
-    showSecond ? "Yay! I'm so happy! ❤️" : "",
+    showSecond ? `Yaaayyy! ${'\n'} I'm the happiest man alive! ❤️` : "",
     40,
   );
 
@@ -79,7 +79,7 @@ function FinalProposal({ selfie }) {
         )}
       </div>
       <div className="relative bg-white/70 p-10 rounded-lg z-10 select-none">
-        <p className="text-4xl font-bold mb-6 text-red-500">
+        <p className="text-4xl font-bold mb-6 text-red-500 whitespace-pre-line">
           {showSecond ? secondMessage : firstMessage}
         </p>
 

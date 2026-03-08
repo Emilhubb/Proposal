@@ -54,7 +54,7 @@ const Question = ({ next, text, options }) => {
                       borderRadius: "15px",
                       textTransform: "none",
                       fontSize: "1.1rem",
-                      backgroundColor: "#ef4444", // Red-500
+                      backgroundColor: "#ef4444", 
                       boxShadow: "0 8px 20px rgba(239, 68, 68, 0.3)",
                       transition: "all 0.3s ease",
                       "&:hover": {
