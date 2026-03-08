@@ -32,54 +32,48 @@ const BuildUp = ({ next, setSelfie }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
+    // Video sensorunun xam ölçüləri
     const vW = video.videoWidth;
     const vH = video.videoHeight;
 
-    let angle = 0;
-    if (screen.orientation) angle = screen.orientation.angle;
-    else if (window.orientation) angle = window.orientation;
+    // ƏGƏR EN > HÜNDÜRLÜK (Landscape tutulub),
+    // onda biz hündürlüyü EN, eni isə HÜNDÜRLÜK kimi qəbul edirik ki, şəkil DİK olsun.
+    const isActuallyLandscape = vW > vH;
 
-    // Həmişə portrait (dik) bir çərçivə istəyirik
     const padding = 20;
     const bottomSpace = 90;
 
-    // Şəklin sensor ölçüləri (dik olacaq şəkildə təyin edirik)
-    // Əgər telefon yandırsa, videonun hündürlüyü bizim yeni enimiz olur
-    const isLandscape = angle === 90 || angle === 270 || angle === -90;
+    // Canvas həmişə DİK (Portrait) formada yaradılır
+    const targetW = isActuallyLandscape ? vH : vW;
+    const targetH = isActuallyLandscape ? vW : vH;
 
-    // Canvas həmişə dik formada qalır
-    const finalImgW = isLandscape ? vH : vW;
-    const finalImgH = isLandscape ? vW : vH;
+    canvas.width = targetW + padding * 2;
+    canvas.height = targetH + padding + bottomSpace;
 
-    canvas.width = finalImgW + padding * 2;
-    canvas.height = finalImgH + padding + bottomSpace;
-
-    // 1. Ağ fon
+    // 1. Ağ fonu rənglə
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-    // 2. Şəklin mərkəzini Polaroidin foto sahəsinə köçürürük
-    ctx.translate(canvas.width / 2, (finalImgH + padding * 2) / 2);
+    // 2. Mərkəzi fotonun çəkiləcəyi yerə köçür
+    ctx.translate(canvas.width / 2, (targetH + padding * 2) / 2);
 
-    // 3. Əsas məntiq: Əgər telefon yan tutulubsa, görüntünü dik hala gətirmək üçün fırlat
-    if (isLandscape) {
-      // 90 dərəcə sağa tutanda sola fırlat, sola tutanda sağa
-      const rotationAdjustment = angle === 90 ? -90 : 90;
-      ctx.rotate((rotationAdjustment * Math.PI) / 180);
+    // 3. Əgər telefon yan tutulubsa, görüntünü mütləq 90 dərəcə sola fırlat
+    if (isActuallyLandscape) {
+      ctx.rotate(-Math.PI / 2); // 90 dərəcə sola çevirmə
     }
 
-    // Selfie üçün güzgü effekti
+    // 4. Selfie (Mirror) effekti - video teqindəki kimi
     ctx.scale(-1, 1);
 
-    // 4. Şəkli çək
+    // 5. Şəkli çək (Orijinal sensor ölçüləri ilə)
     ctx.drawImage(video, -vW / 2, -vH / 2, vW, vH);
     ctx.restore();
 
-    // 5. Yazı
+    // 6. Yazı hissəsi
     ctx.fillStyle = "#4b5563";
     ctx.textAlign = "center";
-    ctx.font = "bold 28px 'Dancing Script', cursive";
+    ctx.font = "bold 24px 'Dancing Script', cursive";
     ctx.fillText(
       "Our first photo together! ❤️",
       canvas.width / 2,
