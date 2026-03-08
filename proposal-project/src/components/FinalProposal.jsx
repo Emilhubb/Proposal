@@ -66,6 +66,7 @@ function FinalProposal({ selfie }) {
               height: "100%",
               pointerEvents: "none",
               overflow: "hidden",
+              zIndex: 9999
             }}
           >
             <Confetti
@@ -84,7 +85,6 @@ function FinalProposal({ selfie }) {
 
         {!showSecond && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            {/* Əsas YES Düyməsi */}
             <Button
               variant="contained"
               color="error"
@@ -101,7 +101,6 @@ function FinalProposal({ selfie }) {
               YES!
             </Button>
 
-            {/* Qaçan NO Düyməsi */}
             <motion.div
               animate={{ x: noButtonPos.x, y: noButtonPos.y }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -109,8 +108,8 @@ function FinalProposal({ selfie }) {
               <Button
                 variant="outlined"
                 color="inherit"
-                onMouseEnter={moveNoButton} // Mouse üzərinə gələndə qaçır
-                onClick={moveNoButton} // Mobildə klikləyəndə qaçır
+                onMouseEnter={moveNoButton} 
+                onClick={moveNoButton} 
                 style={{
                   textTransform: "none",
                   fontSize: "1.2rem",

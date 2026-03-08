@@ -11,13 +11,12 @@ const Question = ({ next, text, options }) => {
   const message = useTypeWriter(text, 40, () => setShowOptions(true));
 
   useEffect(() => {
-    // Yazının uzunluğuna görə vaxtı hesablayırıq (hər hərf üçün 40ms)
     const timer = setTimeout(
       () => {
         setShowOptions(true);
       },
       text.length * 40 + 500,
-    ); // 500ms də əlavə gözləmə payı
+    );
 
     return () => clearTimeout(timer);
   }, [text]);
@@ -29,7 +28,7 @@ const Question = ({ next, text, options }) => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative z-10 mb-10 p-8 rounded-[30px] bg-white/30 backdrop-blur-md border border-white/40 shadow-xl max-w-2xl"
+          className="relative z-10 mb-5 p-8 rounded-[30px] bg-white/30 backdrop-blur-md border border-white/40 shadow-xl max-w-2xl"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-pink-600 leading-snug">
             {message}

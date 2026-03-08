@@ -13,7 +13,7 @@ const Intro = ({ next }) => {
       <HeartAnimation/>
       <div className="z-10 flex flex-col items-center">
         <h1
-          className="text-5xl md:text-6xl font-bold mb-10 text-pink-600 drop-shadow-md select-none"
+          className="text-[49px] md:text-6xl font-bold mb-10 text-pink-600 drop-shadow-md select-none"
           style={{ fontFamily: "'Cinzel', cursive" }}
         >
           {message}
