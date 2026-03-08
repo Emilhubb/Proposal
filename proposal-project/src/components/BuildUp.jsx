@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Button } from "@mui/material";
+import HeartAnimation from "./HeartAnimation";
 
 const BuildUp = ({ next, setSelfie }) => {
   const videoRef = useRef(null);
@@ -31,52 +32,53 @@ const BuildUp = ({ next, setSelfie }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Video sensorunun əsl ölçüləri
     const vW = video.videoWidth;
     const vH = video.videoHeight;
 
-    // Cihazın bucağını alırıq
     let angle = 0;
     if (screen.orientation) angle = screen.orientation.angle;
     else if (window.orientation) angle = window.orientation;
 
-    // 1. Əgər telefon yan tutulubsa (90 və ya 270),
-    // Canvasın eni videonun hündürlüyünə bərabər olmalıdır ki, şəkil köndələn qalmasın.
     const isLandscape = angle === 90 || angle === 270 || angle === -90;
 
+    const padding = 20;
+    const bottomSpace = 90;
+
     if (isLandscape) {
-      canvas.width = vH;
-      canvas.height = vW;
+      canvas.width = vH + padding * 2;
+      canvas.height = vW + padding + bottomSpace;
     } else {
-      canvas.width = vW;
-      canvas.height = vH;
+      canvas.width = vW + padding * 2;
+      canvas.height = vH + padding + bottomSpace;
     }
 
-    // 2. Transformasiyanı mərkəzə köçürürük
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-
-    // 3. Bucaq qədər fırladırıq
-    // (Mobil cihazlarda adətən mənfi bucaq istifadə olunur ki, görüntü düzəlsin)
+    ctx.translate(
+      canvas.width / 2,
+      (canvas.height - bottomSpace + padding) / 2,
+    );
     ctx.rotate((-angle * Math.PI) / 180);
-
-    // 4. Selfie effektini təmin edirik (Front camera mirror)
-    // Əgər şəkli çəkəndə sağ-sol tərsinə çıxsa, aşağıdakı sətri silə bilərsən.
     ctx.scale(-1, 1);
-
-    // 5. Videonu mərkəzə çəkirik
     ctx.drawImage(video, -vW / 2, -vH / 2, vW, vH);
-
     ctx.restore();
 
-    // Şəkli data URL-ə çeviririk
+    ctx.fillStyle = "#4b5563"; 
+    ctx.textAlign = "center";
+    ctx.font = "bold 28px 'Dancing Script', cursive";
+    ctx.fillText(
+      "Our first photo together! ❤️",
+      canvas.width / 2,
+      canvas.height - 35,
+    );
+
     const data = canvas.toDataURL("image/png");
     setPhoto(data);
     setHasPhoto(true);
     setSelfie(data);
 
-    // Kameranı dayandır
     if (video.srcObject) {
       video.srcObject.getTracks().forEach((t) => t.stop());
     }
@@ -92,6 +94,7 @@ const BuildUp = ({ next, setSelfie }) => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-pink-200 text-center p-6">
+      <HeartAnimation />
       <h2 className="text-3xl font-bold mb-6">
         Let's make this moment a little more memorable!
       </h2>
@@ -121,15 +124,33 @@ const BuildUp = ({ next, setSelfie }) => {
         </>
       ) : (
         <>
-          <h2 className="text-3xl font-bold mb-4">
-            Our first photo together! ❤️
-          </h2>
-          <img
-            src={photo}
-            alt="selfie"
-            className="w-72 h-72 rounded-lg border object-cover mb-4"
-          />
+          <div className="flex flex-col items-center">
+            {/* Polaroid Çərçivə */}
+            <div className="bg-white p-3 pb-12 rounded-sm shadow-2xl transform rotate-1 transition-transform hover:rotate-0">
+              {/* Şəkil sahəsi */}
+              <div className="w-72 h-72 overflow-hidden border border-gray-200">
+                <img
+                  src={photo}
+                  alt="selfie"
+                  className="w-full h-full object-cover"
+                  style={{ filter: "sepia(0.2) contrast(1.1)" }} // Vintage filter toxunuşu
+                />
+              </div>
 
+              {/* Şəklin altındakı yazı sahəsi */}
+              <div className="mt-6 text-center">
+                <h2
+                  className="text-2xl text-gray-700 opacity-80"
+                  style={{
+                    fontFamily: "'Dancing Script', cursive",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Our first photo together! ❤️
+                </h2>
+              </div>
+            </div>
+          </div>
           <div className="flex gap-4 justify-center mt-4">
             {hasPhoto && (
               <Button
