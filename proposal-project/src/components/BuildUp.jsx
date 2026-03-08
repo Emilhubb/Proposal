@@ -38,35 +38,48 @@ const BuildUp = ({ next, setSelfie }) => {
     if (screen.orientation) angle = screen.orientation.angle;
     else if (window.orientation) angle = window.orientation;
 
-    // canvas ölçüləri default
+    // Düz şəkil üçün default ölçü
     canvas.width = width;
     canvas.height = height;
 
-    // önəmli: transformları təmizlə
+    // əvvəlki transformları təmizlə
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    if (angle === 0) {
-      // portrait düz
-      ctx.drawImage(video, 0, 0, width, height);
-    } else if (angle === 180) {
-      // portrait tərs → 180 rotate
-      ctx.translate(width, height);
-      ctx.rotate(Math.PI);
-      ctx.drawImage(video, 0, 0, width, height);
-    } else if (angle === 90) {
-      // landscape sağ → rotate -90
-      canvas.width = height;
-      canvas.height = width;
-      ctx.translate(canvas.width, 0);
-      ctx.rotate(-Math.PI / 2);
-      ctx.drawImage(video, 0, 0, width, height);
-    } else if (angle === -90 || angle === 270) {
-      // landscape sol → rotate 90
-      canvas.width = height;
-      canvas.height = width;
-      ctx.translate(0, canvas.height);
-      ctx.rotate(Math.PI / 2);
-      ctx.drawImage(video, 0, 0, width, height);
+    // front camera mirror effekti
+    ctx.translate(width, 0);
+    ctx.scale(-1, 1);
+
+    // rotate tətbiq et
+    switch (angle) {
+      case 0: // portrait düz
+        ctx.drawImage(video, 0, 0, width, height);
+        break;
+      case 180: // portrait tərs
+        ctx.translate(width, height);
+        ctx.rotate(Math.PI);
+        ctx.drawImage(video, 0, 0, width, height);
+        break;
+      case 90: // landscape sağ
+        canvas.width = height;
+        canvas.height = width;
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // transformları təmizlə
+        ctx.translate(canvas.width, 0);
+        ctx.rotate(-Math.PI / 2);
+        ctx.scale(-1, 1); // mirror fix
+        ctx.drawImage(video, 0, 0, width, height);
+        break;
+      case -90:
+      case 270: // landscape sol
+        canvas.width = height;
+        canvas.height = width;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.translate(0, canvas.height);
+        ctx.rotate(Math.PI / 2);
+        ctx.scale(-1, 1); // mirror fix
+        ctx.drawImage(video, 0, 0, width, height);
+        break;
+      default:
+        ctx.drawImage(video, 0, 0, width, height);
     }
 
     const data = canvas.toDataURL("image/png");
@@ -74,7 +87,7 @@ const BuildUp = ({ next, setSelfie }) => {
     setHasPhoto(true);
     setSelfie(data);
 
-    // Kamera dayandırılır
+    // Kamera dayandır
     video.srcObject.getTracks().forEach((t) => t.stop());
   };
   const saveImage = (imageUrl) => {
@@ -112,7 +125,7 @@ const BuildUp = ({ next, setSelfie }) => {
             onClick={takePhoto}
             style={{ textTransform: "none", fontSize: "1.2rem" }}
           >
-            Take Photo
+            Take Photooo
           </Button>
         </>
       ) : (
