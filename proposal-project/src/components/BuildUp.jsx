@@ -31,64 +31,55 @@ const BuildUp = ({ next, setSelfie }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    const width = video.videoWidth;
-    const height = video.videoHeight;
+    // Video sensorunun əsl ölçüləri
+    const vW = video.videoWidth;
+    const vH = video.videoHeight;
 
+    // Cihazın bucağını alırıq
     let angle = 0;
     if (screen.orientation) angle = screen.orientation.angle;
     else if (window.orientation) angle = window.orientation;
 
-    // Düz şəkil üçün default ölçü
-    canvas.width = width;
-    canvas.height = height;
+    // 1. Əgər telefon yan tutulubsa (90 və ya 270),
+    // Canvasın eni videonun hündürlüyünə bərabər olmalıdır ki, şəkil köndələn qalmasın.
+    const isLandscape = angle === 90 || angle === 270 || angle === -90;
 
-    // əvvəlki transformları təmizlə
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-    // front camera mirror effekti
-    ctx.translate(width, 0);
-    ctx.scale(-1, 1);
-
-    // rotate tətbiq et
-    switch (angle) {
-      case 0: // portrait düz
-        ctx.drawImage(video, 0, 0, width, height);
-        break;
-      case 180: // portrait tərs
-        ctx.translate(width, height);
-        ctx.rotate(Math.PI);
-        ctx.drawImage(video, 0, 0, width, height);
-        break;
-      case 90: // landscape sağ
-        canvas.width = height;
-        canvas.height = width;
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // transformları təmizlə
-        ctx.translate(canvas.width, 0);
-        ctx.rotate(-Math.PI / 2);
-        ctx.scale(-1, 1); // mirror fix
-        ctx.drawImage(video, 0, 0, width, height);
-        break;
-      case -90:
-      case 270: // landscape sol
-        canvas.width = height;
-        canvas.height = width;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.translate(0, canvas.height);
-        ctx.rotate(Math.PI / 2);
-        ctx.scale(-1, 1); // mirror fix
-        ctx.drawImage(video, 0, 0, width, height);
-        break;
-      default:
-        ctx.drawImage(video, 0, 0, width, height);
+    if (isLandscape) {
+      canvas.width = vH;
+      canvas.height = vW;
+    } else {
+      canvas.width = vW;
+      canvas.height = vH;
     }
 
+    // 2. Transformasiyanı mərkəzə köçürürük
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+
+    // 3. Bucaq qədər fırladırıq
+    // (Mobil cihazlarda adətən mənfi bucaq istifadə olunur ki, görüntü düzəlsin)
+    ctx.rotate((-angle * Math.PI) / 180);
+
+    // 4. Selfie effektini təmin edirik (Front camera mirror)
+    // Əgər şəkli çəkəndə sağ-sol tərsinə çıxsa, aşağıdakı sətri silə bilərsən.
+    ctx.scale(-1, 1);
+
+    // 5. Videonu mərkəzə çəkirik
+    ctx.drawImage(video, -vW / 2, -vH / 2, vW, vH);
+
+    ctx.restore();
+
+    // Şəkli data URL-ə çeviririk
     const data = canvas.toDataURL("image/png");
     setPhoto(data);
     setHasPhoto(true);
     setSelfie(data);
 
-    // Kamera dayandır
-    video.srcObject.getTracks().forEach((t) => t.stop());
+    // Kameranı dayandır
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach((t) => t.stop());
+    }
   };
   const saveImage = (imageUrl) => {
     const link = document.createElement("a");
